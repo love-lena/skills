@@ -73,13 +73,13 @@ If you find yourself in the prose explaining how a hash is keyed, what each metr
 
 Example of the wrong split — a paragraph that ended up *in the prose* but is mechanics:
 
-*"Three things to notice. First, the hash is keyed on `confidence|task_id` — different tiers get independent buckets within the same task, so a HIGH-only and a MEDIUM-only task at the same rate audit different sets, and a multi-tier task audits at the OR of the per-tier rates rather than at the rate of any one tier."*
+*"Three things to notice. First, the hash is keyed on `flag|user_id` — different flags get independent buckets within the same user, so a user in flag A only and a user in flag B only at the same rollout percent land in different sets, and a user enrolled in both flags is enrolled at the OR of the per-flag rates rather than at the rate of any one flag."*
 
-Three sentences walking through the hash's behavior. It belongs in a map paragraph next to the sampling hunk, where the reader can read it adjacent to the line that does the hashing. The prose version of the same point is one sentence:
+Three sentences walking through the hash's behavior. It belongs in a map paragraph next to the bucketing hunk, where the reader can read it adjacent to the line that does the hashing. The prose version of the same point is one sentence:
 
-*"Each tier samples independently against the same task — see [the sampling block](src/foo.py#L364-L373) for why."*
+*"Each flag enrolls independently against the same user — see [the bucketing block](src/foo.py#L364-L373) for why."*
 
-The prose carries the *what's at stake* (tiers sample independently); the map carries the *how exactly that works* (hash key shape, OR-semantics, multi-tier composition). The reader who only reads prose still understands the consequence. The reader who clicks the chip gets the mechanics, sitting right next to the code.
+The prose carries the *what's at stake* (flags enroll independently); the map carries the *how exactly that works* (hash key shape, OR-semantics, multi-flag composition). The reader who only reads prose still understands the consequence. The reader who clicks the chip gets the mechanics, sitting right next to the code.
 
 A useful test before finishing the prose: re-read each paragraph and ask, "could this sentence sit next to a hunk in the map instead?" If yes, move it. The prose should be irreducible — every sentence carries something the map *can't* carry because it's about the change as a whole, not about a specific hunk.
 
