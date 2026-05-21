@@ -1,6 +1,6 @@
 ---
 name: change-story
-description: Generate a two-column "change story" walkthrough for a pull request or stack of PRs — a continuous prose chapter that names what changed and why on the left, and a surface-grouped, comprehensive code map on the right. Use whenever the user asks for a PR walkthrough, change narrative, code review storyboard, change explanation, "tell me about this PR", "explain this stack", or wants to brief reviewers on a large or stacked change. Especially valuable for stacked PRs or changes of 5+ files where standard diff views fragment the story across pages.
+description: Generate a two-column "change story" walkthrough for a pull request or stack of PRs — a continuous prose chapter that names what changed and why on the left, and a surface-grouped, comprehensive code map on the right. Use whenever the user asks for a PR walkthrough, change narrative, or change story. Especially valuable for stacked PRs or changes of 5+ files where standard diff views fragment the story across pages.
 ---
 
 # Change Story
@@ -16,12 +16,9 @@ Audience: engineers who haven't seen the change. Tone: clear, direct, technical,
 
 ## When to use
 
-Use this skill when:
-- The user asks for a PR walkthrough, change narrative, or storyboard.
-- The user wants to explain a change (a single PR or a stack) to reviewers.
-- The user is preparing a code review writeup, RFC, or change summary that has the shape of "tell the story of this change."
+Use this skill when the user asks for a PR walkthrough, change narrative, or change story.
 
-It earns its keep especially on stacked PRs of 5+ files, where existing diff tools fragment the story across pages.
+It earns its keep especially on stacked PRs or changes of 5+ files, where standard diff views fragment the story across pages.
 
 ## Inputs you need
 
