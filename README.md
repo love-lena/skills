@@ -35,6 +35,16 @@ The prose names *consequences* and points "chips" (line-range markdown links) at
 
 Outputs three portable markdown artifacts: `prose.md`, `map.md`, `diff.patch`. The files are readable on their own; a renderer that understands the chip-and-fence convention can also lay them out as a two-column page.
 
+### [`manta`](./skills/manta/SKILL.md)
+
+Round-trip documents to a [Supernote Manta](https://supernote.com) e-ink tablet for handwritten annotation:
+
+- **Send** — render any markdown into an editorial-format PDF (13pt, double-spaced, generous bottom margin) sized for redlining, dropped straight into the device's review inbox.
+- **Pull** — composite the handwritten `.pdf.mark` annotations back onto the source PDF as a single flattened file.
+- **Read** — an Opus pass over the flattened PDF recovers what the annotations say and merges them into the source draft.
+
+Resolves the Supernote desktop sync folder dynamically (no hardcoded device id) and auto-builds its `supernotelib` venv on first use. macOS.
+
 ## License
 
 [MIT](./LICENSE).
