@@ -5,7 +5,7 @@
 # Usage:
 #   editorial.sh <input.md> [--to-manta | --to <output.pdf>]
 #
-# Default output: ~/Downloads/<basename> - PRINT EDITORIAL.pdf
+# Default output: ~/Downloads/<basename>.pdf
 # --to-manta:   drop into the device send inbox (.../Supernote/INBOX, created if missing).
 # --to <path>:  explicit output path (good for reviewing locally before sending).
 set -euo pipefail
@@ -37,9 +37,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 case "$OUT_MODE" in
-  manta)     INBOX="$(sn_resolve_inbox)" || exit 1; OUT="$INBOX/$BASE - PRINT EDITORIAL.pdf" ;;
+  manta)     INBOX="$(sn_resolve_inbox)" || exit 1; OUT="$INBOX/$BASE.pdf" ;;
   explicit)  OUT="$OUT_OVERRIDE" ;;
-  downloads) OUT="$HOME/Downloads/$BASE - PRINT EDITORIAL.pdf" ;;
+  downloads) OUT="$HOME/Downloads/$BASE.pdf" ;;
 esac
 
 # Find a Chrome/Chromium-family browser for headless PDF rendering.

@@ -39,7 +39,7 @@ EXPORTS="$(.claude/skills/manta/paths.sh --exports)"  # pull source
 
 | Command | What it does |
 |---|---|
-| `editorial.sh <input.md> [--to-manta \| --to <path>]` | Markdown → editorial PDF. Default: `~/Downloads/<name> - PRINT EDITORIAL.pdf`. `--to-manta` drops into the review inbox (created if missing); `--to <path>` writes anywhere — use it to review locally before sending. |
+| `editorial.sh <input.md> [--to-manta \| --to <path>]` | Markdown → editorial PDF. Default: `~/Downloads/<name>.pdf`. `--to-manta` drops into the review inbox (created if missing); `--to <path>` writes anywhere — use it to review locally before sending. |
 | `flatten.sh <name-or-path> [--to <path>]` | Composite `.pdf.mark` annotations onto the source PDF. Finds the source in the `Exports` folder first (then inbox/root/recursive). Default output: `~/Downloads/<name> annotated.pdf`. Auto-builds the venv at `~/.cache/manta/.venv` on first run. |
 
 `editorial.sh` resolves its CSS via `$BASH_SOURCE`; `flatten.sh` keeps its venv at `~/.cache/manta`. Both `source paths.sh` for the device folder, so run from anywhere.
@@ -55,7 +55,7 @@ Review locally first (recommended), then send:
 For an existing PDF, drop it into the inbox (the `--inbox` path is created on first send by `editorial.sh`; `mkdir -p` it for a raw `cp`):
 ```bash
 INBOX="$(.claude/skills/manta/paths.sh --inbox)"; mkdir -p "$INBOX"
-cp source.pdf "$INBOX/<Title> - PRINT EDITORIAL.pdf"
+cp source.pdf "$INBOX/<Title>.pdf"
 ```
 
 ## Verify sync
@@ -71,11 +71,11 @@ If Partner.app is unfocused, click it briefly to nudge the sync cycle. The file 
 
 File finished annotations in the device's **`Exports`** folder, then pull one back:
 ```bash
-.claude/skills/manta/flatten.sh "<Title> - PRINT EDITORIAL"
+.claude/skills/manta/flatten.sh "<Title>"
 ```
 `flatten.sh` looks in `Exports` first, then the inbox and Document root, then anywhere under Document — so it works whether the file was exported or annotated in place.
 
-Output lands in `~/Downloads/<Title> - PRINT EDITORIAL annotated.pdf`. Ink renders black (matches device appearance — color did not help interpretation). If `flatten.sh` can't find the file or reports "no .mark sidecar," sync probably hasn't pushed the annotations back yet — wait for Partner.app, don't assume the page is unmarked.
+Output lands in `~/Downloads/<Title> annotated.pdf`. Ink renders black (matches device appearance — color did not help interpretation). If `flatten.sh` can't find the file or reports "no .mark sidecar," sync probably hasn't pushed the annotations back yet — wait for Partner.app, don't assume the page is unmarked.
 
 **Page placement caveat:** Supernote stores only the *annotated* pages, in order, with no recoverable PDF-page index, so `flatten.sh` maps the Nth annotated page onto PDF page N. That's correct for the usual top-to-bottom redline (annotate from page 1, contiguously). If leading pages were skipped, ink shifts earlier than intended — the Opus reading pass below is the check: it renders the *flattened* result, so misplaced ink shows up as annotations that don't match the page's text.
 
