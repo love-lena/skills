@@ -30,9 +30,9 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Resolve source PDF + mark. Pull from the Exports folder by default (where you
-# file finished annotations), falling back to the inbox, the Document root, then
-# a recursive search anywhere under Document.
+# Resolve source PDF + mark. Pull from the EXPORT folder by default (where you
+# file finished annotations), falling back to the inbox, the device root, then
+# a recursive search anywhere under the device root.
 if [[ -f "$INPUT" ]]; then
   SRC="$INPUT"
 else
@@ -50,7 +50,7 @@ else
     SRC="$(find "$DOC" -type f \( -name "$INPUT.pdf" -o -name "$INPUT" \) -print -quit 2>/dev/null || true)"
   fi
   [[ -n "$SRC" ]] || {
-    echo "can't find source: $INPUT (looked in Exports, INBOX/For Review, and the Document root). If you just finished annotating, export it to the Exports folder and wait for Partner.app to sync." >&2
+    echo "can't find source: $INPUT (looked in EXPORT, INBOX, and the device root). If you just finished annotating, export it to the EXPORT folder and wait for Partner.app to sync." >&2
     exit 1
   }
 fi

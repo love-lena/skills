@@ -1,30 +1,31 @@
 #!/usr/bin/env bash
 # Shared path resolution for the manta skill. Sourced by editorial.sh and flatten.sh.
 #
-# Provides sn_resolve_doc, which prints the Supernote Partner.app "Document" sync
-# folder. The numeric path segment under the container is a per-account/registration
-# id that changes on re-pair or reinstall, so we glob for it rather than hardcoding.
+# Provides sn_resolve_doc, which prints the Supernote Partner.app device sync
+# root (the `.../Supernote` folder). The numeric path segment under the container
+# is a per-account/registration id that changes on re-pair or reinstall, so we
+# glob for it rather than hardcoding.
 #
-# Two device subfolders define the round trip:
-#   INBOX/For Review  -> where Claude DROPS documents (you review/annotate from here)
-#   Exports           -> where you PUT finished annotated files for Claude to pull
+# Two device folders define the round trip:
+#   INBOX   -> where Claude DROPS documents (you review/annotate from here)
+#   EXPORT  -> where you PUT finished annotated files for Claude to pull
 #
 # Run directly to print a resolved folder — handy for raw `cp`:
-#   paths.sh            -> the Document root
-#   paths.sh --inbox    -> the send target   (Document/INBOX/For Review)
-#   paths.sh --exports  -> the pull source   (Document/Exports)
+#   paths.sh            -> the device root  (.../Supernote)
+#   paths.sh --inbox    -> the send target  (.../Supernote/INBOX)
+#   paths.sh --exports  -> the pull source  (.../Supernote/EXPORT)
 
-SN_INBOX_SUBPATH="INBOX/For Review"
-SN_EXPORTS_SUBPATH="Exports"
+SN_INBOX_SUBPATH="INBOX"
+SN_EXPORTS_SUBPATH="EXPORT"
 
 sn_resolve_doc() {
   local container="$HOME/Library/Containers/com.ratta.supernote/Data/Library/Application Support/com.ratta.supernote"
   local docs=() d
-  for d in "$container"/*/Supernote/Document; do
+  for d in "$container"/*/Supernote; do
     [[ -d "$d" ]] && docs+=("$d")
   done
   if ((${#docs[@]} == 0)); then
-    echo "manta: no Supernote Document folder under the Partner.app container — is Supernote Partner.app installed and the device paired?" >&2
+    echo "manta: no Supernote folder under the Partner.app container — is Supernote Partner.app installed and the device paired?" >&2
     return 1
   fi
   if ((${#docs[@]} > 1)); then

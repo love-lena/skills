@@ -6,7 +6,7 @@
 #   editorial.sh <input.md> [--to-manta | --to <output.pdf>]
 #
 # Default output: ~/Downloads/<basename> - PRINT EDITORIAL.pdf
-# --to-manta:   drop into the device send inbox (Document/INBOX/For Review, created if missing).
+# --to-manta:   drop into the device send inbox (.../Supernote/INBOX, created if missing).
 # --to <path>:  explicit output path (good for reviewing locally before sending).
 set -euo pipefail
 
