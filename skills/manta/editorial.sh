@@ -6,13 +6,13 @@
 #   editorial.sh <input.md> [--to-manta | --to <output.pdf>]
 #
 # Default output: ~/Downloads/<basename>.pdf
-# --to-manta:   drop into the device send inbox (.../Supernote/INBOX, created if missing).
+# --to-manta:   upload to the cloud /INBOX (the device pulls it on its next sync).
 # --to <path>:  explicit output path (good for reviewing locally before sending).
 set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CSS="$SKILL_DIR/editorial.css"
-source "$SKILL_DIR/paths.sh"
+source "$SKILL_DIR/cloud.sh"
 
 command -v pandoc >/dev/null || { echo "error: pandoc not installed (brew install pandoc)" >&2; exit 1; }
 
@@ -37,7 +37,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 case "$OUT_MODE" in
-  manta)     INBOX="$(sn_resolve_inbox)" || exit 1; OUT="$INBOX/$BASE.pdf" ;;
+  manta)     OUT="" ;;  # rendered to a temp file, then uploaded
   explicit)  OUT="$OUT_OVERRIDE" ;;
   downloads) OUT="$HOME/Downloads/$BASE.pdf" ;;
 esac
@@ -63,6 +63,13 @@ pandoc "$SRC" -f markdown -t html -o "$WORK/out.html" -H "$CSS"
   --print-to-pdf="$WORK/out.pdf" "file://$WORK/out.html" 2>&1 | tail -1
 [[ -s "$WORK/out.pdf" ]] || { echo "error: PDF render produced no output (browser: $CHROME)" >&2; exit 1; }
 
-mkdir -p "$(dirname "$OUT")"
-cp "$WORK/out.pdf" "$OUT"
-echo "wrote: $OUT"
+if [[ "$OUT_MODE" == "manta" ]]; then
+  sn_ensure_venv || exit 1
+  sn_ensure_login || exit 1
+  "$(sn_cli)" cloud upload "$WORK/out.pdf" "$SN_INBOX/$BASE.pdf"
+  echo "uploaded: $SN_INBOX/$BASE.pdf (the device pulls it on its next sync)"
+else
+  mkdir -p "$(dirname "$OUT")"
+  cp "$WORK/out.pdf" "$OUT"
+  echo "wrote: $OUT"
+fi

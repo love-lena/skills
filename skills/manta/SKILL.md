@@ -11,71 +11,75 @@ allowed-tools:
 
 # Manta workflow
 
-Send files to a Supernote Manta, pull annotated files back, and generate editorial-format PDFs sized for redlining.
+Send files to a Supernote Manta, pull annotated files back, and generate editorial-format PDFs sized for redlining. The round trip goes through a **self-hosted Supernote private cloud** via the `supernote cloud` CLI — no desktop sync app required.
 
-**Platform:** macOS. The sync-folder path targets the macOS Supernote Partner.app container; browser detection includes Linux fallbacks, but the device paths assume macOS.
+**Platform:** macOS for editorial-PDF rendering (Chrome paths; Linux fallbacks included). The cloud round trip is OS-agnostic.
 
-**Prerequisites:** `pandoc` + a Chrome/Chromium-family browser (editorial PDF); `mutool` / mupdf-tools (reading recipe). The supernotelib venv is auto-built on first `flatten.sh` run. Supernote Partner.app must be running for sync (focused or unfocused).
+**Prerequisites:**
+- `pandoc` + a Chrome/Chromium-family browser (editorial PDF rendering).
+- A reachable Supernote private cloud (e.g. an `allenporter/supernote` self-host) and a one-time login (below).
+- The cloud client + notebook tooling are auto-installed into `~/.cache/manta/.venv` on first run.
 
-## Sync folder & the round trip
+## Setup (one-time)
 
-The desktop app's Document folder is **bidirectional** — files copied in propagate to the device; annotations propagate back as `.pdf.mark` sidecars. The folder lives under the Partner.app container at a per-registration numeric id that **changes on re-pair/reinstall**, so the scripts resolve it dynamically via `paths.sh` (`sn_resolve_doc`). Never hardcode it.
+Log in to your cloud once; the host + token cache at `~/.cache/supernote.pkl` (nothing secret lives in this skill):
+```bash
+# build the venv if you haven't run a script yet
+bash skills/manta/cloud.sh >/dev/null 2>&1 || true
+~/.cache/manta/.venv/bin/supernote cloud login <your-account> --url <your-cloud-url>
+```
+Override the venv location with `SN_VENV` if desired.
 
-Two subfolders define the workflow — the scripts target them automatically:
+## The round trip (cloud folders)
+
+Two standard device folders define the workflow — the scripts target them automatically:
 
 | Folder | Direction | Used by |
 |---|---|---|
-| `INBOX/For Review` | Claude **drops** docs here; you review/annotate from it | `editorial.sh --to-manta` |
-| `Exports` | You **file** finished annotated docs here for Claude to pull | `flatten.sh` (searched first) |
+| `/INBOX` | Claude **uploads** docs here; you review/annotate from it | `editorial.sh --to-manta` |
+| `/EXPORT` | You **file** finished annotated docs here for Claude to pull | `flatten.sh` (searched first) |
 
-Get a resolved path for a raw `cp`:
-```bash
-DOC="$(.claude/skills/manta/paths.sh)"            # Document root
-INBOX="$(.claude/skills/manta/paths.sh --inbox)"  # send target
-EXPORTS="$(.claude/skills/manta/paths.sh --exports)"  # pull source
-```
+The device pulls an uploaded `/INBOX` file on its next sync — immediately if your cloud has the push channel, otherwise on the device's normal sync cycle. Annotations come back as `.pdf.mark` sidecars in `/EXPORT` (or `/INBOX` if you annotate in place).
 
 ## Scripts (in this skill's directory)
 
 | Command | What it does |
 |---|---|
-| `editorial.sh <input.md> [--to-manta \| --to <path>]` | Markdown → editorial PDF. Default: `~/Downloads/<name>.pdf`. `--to-manta` drops into the review inbox (created if missing); `--to <path>` writes anywhere — use it to review locally before sending. |
-| `flatten.sh <name-or-path> [--to <path>]` | Composite `.pdf.mark` annotations onto the source PDF. Finds the source in the `Exports` folder first (then inbox/root/recursive). Default output: `~/Downloads/<name> annotated.pdf`. Auto-builds the venv at `~/.cache/manta/.venv` on first run. |
+| `editorial.sh <input.md> [--to-manta \| --to <path>]` | Markdown → editorial PDF. Default: `~/Downloads/<name>.pdf`. `--to-manta` **uploads** to the cloud `/INBOX`; `--to <path>` writes anywhere — use it to review locally before sending. |
+| `flatten.sh <name-or-path> [--to <path>]` | Composite `.pdf.mark` annotations onto the source PDF. Downloads `<name>.pdf` + `.pdf.mark` from `/EXPORT` first, then `/INBOX` (or pass a local path). Default output: `~/Downloads/<name> annotated.pdf`. |
 
-`editorial.sh` resolves its CSS via `$BASH_SOURCE`; `flatten.sh` keeps its venv at `~/.cache/manta`. Both `source paths.sh` for the device folder, so run from anywhere.
+Both `source cloud.sh` for the cloud helpers, so run them from anywhere.
 
 ## Sending a file TO the Manta
 
 Review locally first (recommended), then send:
 ```bash
-.claude/skills/manta/editorial.sh "path/to/doc.md" --to /tmp/preview.pdf   # inspect
-.claude/skills/manta/editorial.sh "path/to/doc.md" --to-manta              # send
+skills/manta/editorial.sh "path/to/doc.md" --to /tmp/preview.pdf   # inspect
+skills/manta/editorial.sh "path/to/doc.md" --to-manta              # upload to /INBOX
 ```
 
-For an existing PDF, drop it into the inbox (the `--inbox` path is created on first send by `editorial.sh`; `mkdir -p` it for a raw `cp`):
+For an existing PDF, upload it directly:
 ```bash
-INBOX="$(.claude/skills/manta/paths.sh --inbox)"; mkdir -p "$INBOX"
-cp source.pdf "$INBOX/<Title>.pdf"
+~/.cache/manta/.venv/bin/supernote cloud upload "source.pdf" "/INBOX/<Title>.pdf"
 ```
 
-## Verify sync
+## Verify
 
-A `cp`/`--to-manta` only reaches the device if Partner.app is running. Check it, then confirm the file landed in the inbox:
+Confirm the upload landed and check what's on the cloud:
 ```bash
-pgrep -f Supernote >/dev/null || echo "Partner.app not running — nothing will sync"
-ls "$(.claude/skills/manta/paths.sh --inbox)"
+~/.cache/manta/.venv/bin/supernote cloud ls /INBOX
 ```
-If Partner.app is unfocused, click it briefly to nudge the sync cycle. The file shows up on-device within ~minutes.
+If the device hasn't pulled it, wake the device or wait for its sync cycle. If a command errors with a login/connection message, re-check `cloud login` and that your cloud is reachable.
 
 ## Pulling annotated files FROM the Manta
 
-File finished annotations in the device's **`Exports`** folder, then pull one back:
+File finished annotations in the device's **EXPORT** folder, then pull one back:
 ```bash
-.claude/skills/manta/flatten.sh "<Title>"
+skills/manta/flatten.sh "<Title>"
 ```
-`flatten.sh` looks in `Exports` first, then the inbox and Document root, then anywhere under Document — so it works whether the file was exported or annotated in place.
+`flatten.sh` downloads from `/EXPORT` first, then `/INBOX` — so it works whether you exported the file or annotated it in place.
 
-Output lands in `~/Downloads/<Title> annotated.pdf`. Ink renders black (matches device appearance — color did not help interpretation). If `flatten.sh` can't find the file or reports "no .mark sidecar," sync probably hasn't pushed the annotations back yet — wait for Partner.app, don't assume the page is unmarked.
+Output lands in `~/Downloads/<Title> annotated.pdf`. Ink renders black (matches device appearance — color did not help interpretation). If `flatten.sh` reports it can't find the `.pdf.mark`, sync probably hasn't pushed the annotations back yet — wait for the device to sync, don't assume the page is unmarked.
 
 **Page placement caveat:** Supernote stores only the *annotated* pages, in order, with no recoverable PDF-page index, so `flatten.sh` maps the Nth annotated page onto PDF page N. That's correct for the usual top-to-bottom redline (annotate from page 1, contiguously). If leading pages were skipped, ink shifts earlier than intended — the Opus reading pass below is the check: it renders the *flattened* result, so misplaced ink shows up as annotations that don't match the page's text.
 
@@ -108,9 +112,8 @@ To recover what the annotations say, **dispatch an Opus subagent** over the flat
 
 ## Common Mistakes
 
-- **Hardcoding the sync path** — the numeric id changes on re-pair. Use `paths.sh` / `sn_resolve_doc`.
+- **Not logged in** — the scripts need a one-time `supernote cloud login` (see Setup). A login/connection error means re-check that, and that your cloud is reachable.
 - **Passing `--metadata title=` (or `-s`/`--standalone`) to pandoc** — emits a duplicate title block. Let the source's own `# Title` heading be the title.
 - **Expecting `##` sections to start new pages** — they don't (see Pagination).
-- **Assuming a send worked without Partner.app** — no Partner.app = no sync. Verify it's running.
-- **Treating "no .mark sidecar" as unmarked** — usually means sync hasn't completed yet.
+- **Treating "no .mark sidecar" as unmarked** — usually means the device hasn't synced the annotation back yet.
 - **Black ink is intentional** — matches device appearance; color didn't aid interpretation.
