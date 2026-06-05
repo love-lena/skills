@@ -46,9 +46,10 @@ The device pulls an uploaded `/INBOX` file on its next sync — immediately if y
 | Command | What it does |
 |---|---|
 | `editorial.sh <input.md> [--to-manta \| --to <path>]` | Markdown → editorial PDF. Default: `~/Downloads/<name>.pdf`. `--to-manta` **uploads** to the cloud `/INBOX`; `--to <path>` writes anywhere — use it to review locally before sending. |
-| `flatten.sh <name-or-path> [--to <path>]` | Composite `.pdf.mark` annotations onto the source PDF. Downloads `<name>.pdf` + `.pdf.mark` from `/EXPORT` first, then `/INBOX` (or pass a local path). Default output: `~/Downloads/<name> annotated.pdf`. |
+| `pull.sh <name> [--to <path>]` | **Pull an annotated doc back** into `~/Downloads`. Grabs a flattened device **Export** from `/EXPORT` directly; falls back to `flatten.sh` when it finds a `.pdf.mark` sidecar. The everyday "get my redlines back" command. |
+| `flatten.sh <name-or-path> [--to <path>]` | Composite a `.pdf.mark` sidecar onto the source PDF (the fallback `pull.sh` uses; also works on a local path). Default output: `~/Downloads/<name> annotated.pdf`. |
 
-Both `source cloud.sh` for the cloud helpers, so run them from anywhere.
+All `source cloud.sh` for the cloud helpers, so run them from anywhere.
 
 ## Sending a file TO the Manta
 
@@ -73,13 +74,18 @@ If the device hasn't pulled it, wake the device or wait for its sync cycle. If a
 
 ## Pulling annotated files FROM the Manta
 
-File finished annotations in the device's **EXPORT** folder, then pull one back:
-```bash
-skills/manta/flatten.sh "<Title>"
-```
-`flatten.sh` downloads from `/EXPORT` first, then `/INBOX` — so it works whether you exported the file or annotated it in place.
+The device hands work back two ways, and `pull.sh` handles both:
 
-Output lands in `~/Downloads/<Title> annotated.pdf`. Ink renders black (matches device appearance — color did not help interpretation). If `flatten.sh` reports it can't find the `.pdf.mark`, sync probably hasn't pushed the annotations back yet — wait for the device to sync, don't assume the page is unmarked.
+- **Export to PDF** (on the device) → a *flattened* PDF lands in `/EXPORT`, ink baked in, no sidecar. `pull.sh` downloads it directly.
+- **Annotate in place** → the ink syncs back as a `<name>.pdf.mark` sidecar beside the original. `pull.sh` detects the sidecar and composites via `flatten.sh`.
+
+```bash
+skills/manta/pull.sh "<Title>"     # -> ~/Downloads/<Title> annotated.pdf
+```
+
+`pull.sh` searches `/EXPORT` first, then `/INBOX`. It only composites when it finds a `.pdf.mark` (then the matching `.pdf` is the un-inked original); otherwise it grabs the flattened export. Use `flatten.sh` directly for a local file or to force compositing.
+
+Output lands in `~/Downloads/<Title> annotated.pdf`. Ink renders black (matches device appearance — color did not help interpretation). If `pull.sh` finds nothing, sync probably hasn't pushed the work back yet — wait for the device to sync, don't assume the page is unmarked.
 
 **Page placement caveat:** Supernote stores only the *annotated* pages, in order, with no recoverable PDF-page index, so `flatten.sh` maps the Nth annotated page onto PDF page N. That's correct for the usual top-to-bottom redline (annotate from page 1, contiguously). If leading pages were skipped, ink shifts earlier than intended — the Opus reading pass below is the check: it renders the *flattened* result, so misplaced ink shows up as annotations that don't match the page's text.
 
