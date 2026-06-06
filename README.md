@@ -45,6 +45,15 @@ Round-trip documents to a [Supernote Manta](https://supernote.com) e-ink tablet 
 
 Resolves the Supernote desktop sync folder dynamically (no hardcoded device id) and auto-builds its `supernotelib` venv on first use. macOS.
 
+### [`writing-style`](./skills/writing-style/SKILL.md)
+
+Write prose in lena's voice — and get better at it over time:
+
+- **`SKILL.md`** (immutable) carries the universal craft rules — flowing prose, every sentence earns its place, cut the slop — plus a read/record protocol.
+- **`STYLE.md`** is a living memory of learned preferences. The skill reads it before drafting; after a draft gets feedback, it records what it learned, consolidating rather than just appending.
+
+Ships seeded with a few preferences (concise *ideas* not short sentences; lead with the conclusion; plain and literal; no first- or second-person pronouns) and grows from edits, A/B picks, and notes. Not for code.
+
 ## License
 
 [MIT](./LICENSE).
