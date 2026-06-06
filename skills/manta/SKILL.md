@@ -113,7 +113,9 @@ To recover what the annotations say, **dispatch an Opus subagent** over the flat
 
 ## Editorial formats
 
-**EPUB (default) — `epub.css`.** A reflowable reading layout: serif body, sans-serif ruled section headings, styled blockquotes/lists/tables, monospace code. Size, line spacing, and page margins are **set on the device** (Display Settings — keep "Document default setting", or choose User-defined), so reading comfort + annotation room are dialed there, not baked in. Title-page handling is automatic: a YAML `title:` (web clippings) keeps pandoc's title page; a body `#` title (ADRs/plain md) suppresses it via `--epub-title-page=false` so it isn't an "UNTITLED" page or a duplicate.
+**EPUB (default) — `epub.css`.** A reflowable reading layout: serif body, sans-serif ruled section headings, styled blockquotes/lists/tables, monospace code. Size, line spacing, and page margins are **set on the device** (Display Settings — keep "Document default setting", or choose User-defined), so reading comfort is dialed there, not baked in. Title-page handling is automatic: a YAML `title:` (web clippings) keeps pandoc's title page; a body `#` title (ADRs/plain md) suppresses it via `--epub-title-page=false` so it isn't an "UNTITLED" page or a duplicate.
+
+> **EPUB is for reading, not redlining.** On-device EPUB annotations do NOT reliably round-trip: the device stores ink in a `.epub.mark` with **no text context** (reflowable — there's no fixed page to composite onto) and the sync is **conflict-prone** (repeated edits spawn blank `_CONFLICT_` copies). So `pull.sh` is PDF-only by design. **For anything you'll mark up and need back, send `--pdf`** — its annotations round-trip cleanly (see Pulling).
 
 On-device CSS support (verified on the Manta/Chauvet reader): **font-family, font-size, text-align, color, and borders are honored; font-weight is NOT** (the serif has no bold face). So emphasis can't rely on bold — `epub.css` renders `strong`/`**bold**` in the **sans face**, which pops against the serif body. Body is left-aligned (justify makes rivers at large e-ink sizes).
 
