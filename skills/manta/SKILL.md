@@ -1,6 +1,6 @@
 ---
 name: manta
-description: Use when sending files to your Supernote Manta for handwritten annotation, pulling annotated files back, or generating editorial-format PDFs (large font, double-spaced, generous bottom margin) suitable for redlining on the device. Triggers include "send this to my manta", "print an editor version", "redline on the manta", "pull my annotations from the manta", "flatten the mark file".
+description: Use when sending files to your Supernote Manta for reading and handwritten annotation, pulling annotated files back, or generating editorial reading versions of documents (a reflowable EPUB by default, or a large-font redline PDF) for the device. Triggers include "send this to my manta", "print an editor version", "redline on the manta", "pull my annotations from the manta", "flatten the mark file".
 allowed-tools:
   - Bash
   - Read
@@ -11,12 +11,12 @@ allowed-tools:
 
 # Manta workflow
 
-Send files to a Supernote Manta, pull annotated files back, and generate editorial-format PDFs sized for redlining. The round trip goes through a **self-hosted Supernote private cloud** via the `supernote cloud` CLI — no desktop sync app required.
+Send files to a Supernote Manta, pull annotated files back, and generate editorial reading versions of documents. The round trip goes through a **self-hosted Supernote private cloud** via the `supernote cloud` CLI — no desktop sync app required.
 
-**Platform:** macOS for editorial-PDF rendering (Chrome paths; Linux fallbacks included). The cloud round trip is OS-agnostic.
+**Platform:** macOS for the `--pdf` redline render (Chrome paths; Linux fallbacks included). The default EPUB path and the cloud round trip are OS-agnostic.
 
 **Prerequisites:**
-- `pandoc` + a Chrome/Chromium-family browser (editorial PDF rendering).
+- `pandoc` (always). A Chrome/Chromium-family browser is needed only for `--pdf`.
 - A reachable Supernote private cloud (e.g. an `allenporter/supernote` self-host) and a one-time login (below).
 - The cloud client + notebook tooling are auto-installed into `~/.cache/manta/.venv` on first run.
 
@@ -45,7 +45,7 @@ The device pulls an uploaded `/INBOX` file on its next sync — immediately if y
 
 | Command | What it does |
 |---|---|
-| `editorial.sh <input.md> [--to-manta \| --to <path>]` | Markdown → editorial PDF. Default: `~/Downloads/<name>.pdf`. `--to-manta` **uploads** to the cloud `/INBOX`; `--to <path>` writes anywhere — use it to review locally before sending. |
+| `editorial.sh <input.md> [--pdf] [--to-manta \| --to <path>]` | Markdown → **editorial EPUB** (default; reflowable, styled for on-device reading) or **redline PDF** (`--pdf`). `--to-manta` uploads to `/INBOX`; `--to <path>` writes locally (review first). Output: `~/Downloads/<name>.epub` (or `.pdf`). |
 | `pull.sh <name> [--to <path>]` | **Pull an annotated doc back** into `~/Downloads`. Grabs a flattened device **Export** from `/EXPORT` directly; falls back to `flatten.sh` when it finds a `.pdf.mark` sidecar. The everyday "get my redlines back" command. |
 | `flatten.sh <name-or-path> [--to <path>]` | Composite a `.pdf.mark` sidecar onto the source PDF (the fallback `pull.sh` uses; also works on a local path). Default output: `~/Downloads/<name> annotated.pdf`. |
 
@@ -53,13 +53,14 @@ All `source cloud.sh` for the cloud helpers, so run them from anywhere.
 
 ## Sending a file TO the Manta
 
-Review locally first (recommended), then send:
+The default is an **editorial EPUB** — reflowable, styled for reading and annotating on the device. Send it straight, or review locally first:
 ```bash
-skills/manta/editorial.sh "path/to/doc.md" --to /tmp/preview.pdf   # inspect
-skills/manta/editorial.sh "path/to/doc.md" --to-manta              # upload to /INBOX
+skills/manta/editorial.sh "path/to/doc.md" --to-manta          # editorial EPUB -> /INBOX
+skills/manta/editorial.sh "path/to/doc.md" --to /tmp/x.epub     # inspect locally first
+skills/manta/editorial.sh "path/to/doc.md" --pdf --to-manta    # redline PDF instead
 ```
 
-For an existing PDF, upload it directly:
+For an existing file (PDF/EPUB), upload it directly:
 ```bash
 ~/.cache/manta/.venv/bin/supernote cloud upload "source.pdf" "/INBOX/<Title>.pdf"
 ```
@@ -110,16 +111,19 @@ To recover what the annotations say, **dispatch an Opus subagent** over the flat
 
 **Don't reach for glm-ocr unless** you want a quick prose-only OCR dump. The composited-PDF glm-ocr pass is OK for "current draft state" but loses edit semantics.
 
-## Editorial format (baked into editorial.css)
+## Editorial formats
 
-13pt Georgia body, 2.0 line-height, sans-serif headings, 3.5in bottom margin on **every** page (the redline space), styled tables/code/blockquotes.
+**EPUB (default) — `epub.css`.** A reflowable reading layout: serif body, sans-serif ruled section headings, styled blockquotes/lists/tables, monospace code. Size, line spacing, and page margins are **set on the device** (Display Settings — keep "Document default setting", or choose User-defined), so reading comfort + annotation room are dialed there, not baked in. Title-page handling is automatic: a YAML `title:` (web clippings) keeps pandoc's title page; a body `#` title (ADRs/plain md) suppresses it via `--epub-title-page=false` so it isn't an "UNTITLED" page or a duplicate.
 
-**Pagination:** a forced break before a section fires only on the 3rd-plus top-level `#` heading (`h1:nth-of-type(n+3)`). A doc that is one `#` title + `##`/`###` sections **flows continuously** — no per-section page breaks, just the 3.5in bottom margin on each page. That's expected; don't add extra `#` headings to force breaks.
+On-device CSS support (verified on the Manta/Chauvet reader): **font-family, font-size, text-align, color, and borders are honored; font-weight is NOT** (the serif has no bold face). So emphasis can't rely on bold — `epub.css` renders `strong`/`**bold**` in the **sans face**, which pops against the serif body. Body is left-aligned (justify makes rivers at large e-ink sizes).
+
+**PDF redline — `--pdf`, `editorial.css`.** The fixed print format: 13pt Georgia, 2.0 line-height, sans headings, 3.5in bottom margin on every page (the redline space). Use when you specifically want that layout. Pagination: a forced section break fires only on the 3rd-plus top-level `#` (`h1:nth-of-type(n+3)`); a single `#` title + `##`/`###` sections flows continuously — don't add extra `#` headings to force breaks.
 
 ## Common Mistakes
 
 - **Not logged in** — the scripts need a one-time `supernote cloud login` (see Setup). A login/connection error means re-check that, and that your cloud is reachable.
-- **Passing `--metadata title=` (or `-s`/`--standalone`) to pandoc** — emits a duplicate title block. Let the source's own `# Title` heading be the title.
+- **Passing `--metadata title=` (or `-s`/`--standalone`) to pandoc for the PDF** — emits a duplicate title block. Let the source's own `# Title` heading be the title.
+- **Relying on bold in EPUB** — the device drops font-weight; `epub.css` carries emphasis via the sans face instead. Don't move emphasis back to font-weight.
 - **Expecting `##` sections to start new pages** — they don't (see Pagination).
 - **Treating "no .mark sidecar" as unmarked** — usually means the device hasn't synced the annotation back yet.
 - **Black ink is intentional** — matches device appearance; color didn't aid interpretation.
