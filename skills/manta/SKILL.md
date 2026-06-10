@@ -30,6 +30,14 @@ bash skills/manta/cloud.sh >/dev/null 2>&1 || true
 ```
 Override the venv location with `SN_VENV` if desired.
 
+**Optional — unattended re-login.** The cached token expires (default 24h unless your server raises `auth.expiration_hours`). To re-login automatically instead of erroring when it lapses, create `~/.config/manta/login.env` (chmod 600 — this lives outside the repo, no secret ships with the skill):
+```bash
+SN_ACCOUNT=you@your-cloud
+SN_PASSWORD=...
+SN_URL=http://your-cloud:8080
+```
+When present, the scripts probe the token before each cloud op and re-login from this file if it's missing or expired. Override its path with `SN_CREDS`.
+
 ## The round trip (cloud folders)
 
 Two standard device folders define the workflow — the scripts target them automatically:

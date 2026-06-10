@@ -52,15 +52,49 @@ sn_ensure_venv() {
 # Print the cloud CLI path. Call sn_ensure_venv first.
 sn_cli() { printf '%s\n' "$SN_VENV/bin/supernote"; }
 
-# Fail with setup instructions if there is no cached cloud login.
+# Optional local credentials file for unattended re-login (NOT in this repo;
+# nothing secret ships with the skill). Create it once, chmod 600, with:
+#   SN_ACCOUNT=you@your-cloud
+#   SN_PASSWORD=...
+#   SN_URL=http://your-cloud:8080
+# Override the location with SN_CREDS.
+SN_CREDS="${SN_CREDS:-$HOME/.config/manta/login.env}"
+
+# True if the cached token currently works (cheap probe against the cloud).
+sn_token_ok() { "$(sn_cli)" cloud ls / >/dev/null 2>&1; }
+
+# Log in using the local creds file. Non-zero if it's absent or incomplete.
+sn_login_from_creds() {
+  [[ -f "$SN_CREDS" ]] || return 1
+  # shellcheck disable=SC1090
+  source "$SN_CREDS"
+  [[ -n "${SN_ACCOUNT:-}" && -n "${SN_PASSWORD:-}" && -n "${SN_URL:-}" ]] || return 1
+  "$(sn_cli)" cloud login "$SN_ACCOUNT" --password "$SN_PASSWORD" --url "$SN_URL" >/dev/null 2>&1
+}
+
+# Ensure a WORKING cloud session. Probes the cached token; if it's missing or
+# expired, transparently re-logs in from $SN_CREDS. Falls back to one-time
+# manual-login instructions only when no creds file is present.
 sn_ensure_login() {
-  if [[ ! -f "$HOME/.cache/supernote.pkl" ]]; then
-    cat >&2 <<EOF
-manta: not logged in to a Supernote cloud. Run once (your account + cloud URL):
-  $SN_VENV/bin/supernote cloud login <your-account> --url <your-cloud-url>
-EOF
+  if [[ -f "$HOME/.cache/supernote.pkl" ]] && sn_token_ok; then
+    return 0
+  fi
+  if [[ -f "$SN_CREDS" ]]; then
+    echo "manta: cloud session missing/expired — re-logging in from $SN_CREDS" >&2
+    if sn_login_from_creds && sn_token_ok; then
+      return 0
+    fi
+    echo "manta: auto re-login failed (check $SN_CREDS and that the cloud is reachable)" >&2
     return 1
   fi
+  cat >&2 <<EOF
+manta: no working Supernote session (token missing/expired, no auto-login creds).
+Log in once:
+  $SN_VENV/bin/supernote cloud login <your-account> --url <your-cloud-url>
+or create $SN_CREDS (chmod 600) with SN_ACCOUNT / SN_PASSWORD / SN_URL for
+unattended re-login.
+EOF
+  return 1
 }
 
 # When executed directly (not sourced): build the venv and report login status.
