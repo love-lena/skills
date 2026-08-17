@@ -24,6 +24,12 @@ npx skills add love-lena/skills -g
 
 ## Skills
 
+### [`status-board`](./skills/status-board/SKILL.md)
+
+Turn active engineering work into a self-contained HTML decision surface. It leads with the single highest-leverage next action, maps a PR stack in dependency order, and lays out the complete path to shipped.
+
+Optimized for stacked pull requests, but also works for project milestones and active coding sessions. Existing boards update in place; stale blockers, resolved history, code-level implementation debris, and unsupported claims stay out.
+
 ### [`change-story`](./skills/change-story/SKILL.md)
 
 Tell the story of a code change — a single PR, a stack of PRs, or any diff — as a two-column walkthrough:

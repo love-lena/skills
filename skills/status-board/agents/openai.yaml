@@ -1,0 +1,4 @@
+interface:
+  display_name: "Status Board"
+  short_description: "Build actionable HTML project status boards"
+  default_prompt: "Use $status-board to update the current PR stack status board and identify the next move."
