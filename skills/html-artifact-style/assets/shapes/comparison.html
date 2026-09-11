@@ -1,0 +1,18 @@
+<p class="sample-label">Comparison example · illustrative decision</p>
+<h1>Use one file for the reading pack</h1>
+<p class="intro">A self-contained HTML file is the simpler choice for a document that people download, keep, and open offline.</p>
+<div class="callout"><p><strong>Recommendation:</strong> embed the document’s styles and diagrams. Revisit this choice if the pack grows into a frequently updated collection of pages.</p></div>
+<section><h2>What changes between the options</h2>
+  <table class="comparison">
+    <thead><tr><th scope="col">Criterion</th><th scope="col">Single HTML file</th><th scope="col">Shared assets</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Offline use</th><td>One file carries the reading experience.</td><td>Needs a complete local bundle or cached assets.</td></tr>
+      <tr><th scope="row">Sharing</th><td>Send one attachment.</td><td>Send a folder, archive, or hosted link.</td></tr>
+      <tr><th scope="row">Style updates</th><td>Regenerate each document.</td><td>Update a common stylesheet for connected pages.</td></tr>
+      <tr><th scope="row">Repeated assets</th><td>Copied into each document.</td><td>Can be reused across the collection.</td></tr>
+    </tbody>
+  </table>
+</section>
+<section><h2>The tradeoff</h2><p>Embedding favors portability over centralized updates. That is a good fit for a review artifact whose content and appearance should stay together as a snapshot.</p></section>
+<section><h2>What would change the recommendation?</h2><p>Choose shared assets when the main use is a connected collection, updates should propagate immediately, and offline sharing is secondary.</p></section>
+<details><summary>Scope of this comparison</summary><p>This example compares packaging, not a particular hosting service or framework. File size and loading performance would need measurement against the actual documents.</p></details>

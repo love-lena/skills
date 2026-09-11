@@ -1,0 +1,14 @@
+<p class="sample-label">Status board example · illustrative project state</p>
+<h1>Offline reading pack is ready for final review</h1>
+<p class="intro">Export works. The remaining gate is the dark-mode check before the mobile pass and release.</p>
+<div class="next-action"><p class="action-label">Next action</p><h3>Review diagram contrast in dark mode</h3><p>Approve the revised labels and connectors so the mobile verification can start.</p></div>
+<section>
+  <h2>Work in dependency order</h2>
+  <ol class="work-list">
+    <li><div class="item-heading"><h3>1. Bundle the reading pack</h3><span class="state good">Complete</span></div><p>Text and diagrams open offline in a single file. This provides the artifact for the remaining checks.</p></li>
+    <li><div class="item-heading"><h3>2. Confirm dark-mode readability</h3><span class="state warning">Needs review</span></div><p>Inspect the revised diagram treatment in both appearances.</p></li>
+    <li><div class="item-heading"><h3>3. Verify the mobile layout</h3><span class="state">Blocked by step 2</span></div><p>Check wrapping, table labels, and diagram reflow on the approved version.</p></li>
+  </ol>
+</section>
+<section><h2>Path to release</h2><ol class="steps"><li>Approve the contrast review.<p>Exit condition: every diagram label and connector is readable in both modes.</p></li><li>Complete the mobile check.<p>Exit condition: content fits a 390 px viewport without horizontal page scrolling.</p></li><li>Publish the verified reading pack.<p>Exit condition: the shared file matches the reviewed version.</p></li></ol></section>
+<details><summary>What would change this plan?</summary><p>A failed mobile check reopens the affected layout work. A content change requires checking the changed diagram or section before release.</p></details>

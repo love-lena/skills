@@ -1,0 +1,20 @@
+{
+  "name": "plain-log-workbench",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.0",
+    "class-variance-authority": "^0.7.1",
+    "esbuild": "^0.25.0",
+    "tailwindcss": "^4.1.0",
+    "@tailwindcss/cli": "^4.1.0",
+    "@radix-ui/react-tabs": "latest",
+    "@radix-ui/react-tooltip": "latest",
+    "@radix-ui/react-slot": "latest",
+    "recharts": "2.15.4",
+    "lucide-react": "latest"
+  }
+}

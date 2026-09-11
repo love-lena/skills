@@ -24,6 +24,12 @@ npx skills add love-lena/skills -g
 
 ## Skills
 
+### [`html-artifact-style`](./skills/html-artifact-style/SKILL.md)
+
+Create standalone HTML artifacts in Lena's Plain style: light and dark appearances, a single reading column, deliberate diagrams, inline footnotes, and clear interaction hierarchy.
+
+Includes document, dashboard, status board, comparison, and system explainer shapes; a renderer for self-contained HTML; a draggable graph example; and the approved shadcn/ui log explorer with editable source and a bundled offline build.
+
 ### [`status-board`](./skills/status-board/SKILL.md)
 
 Turn active engineering work into a self-contained HTML decision surface. It leads with the single highest-leverage next action, maps a PR stack in dependency order, and lays out the complete path to shipped.

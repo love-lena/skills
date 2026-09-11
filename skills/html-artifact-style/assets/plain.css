@@ -1,0 +1,177 @@
+:root {
+  color-scheme:light dark;
+  --paper:light-dark(#ffffff,#191b1f);
+  --ink:light-dark(#252930,#e6e8ed);
+  --quiet:light-dark(#59616d,#a9b0bb);
+  --rule:light-dark(#d8dde4,#444a55);
+  --wash:light-dark(#f4f6f9,#232830);
+  --accent:light-dark(#285aa4,#9ec3ff);
+  --accent-wash:light-dark(#edf3fc,#232f43);
+  --good:light-dark(#286348,#9dd1b2);
+  --warning:light-dark(#825518,#e8c38c);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;
+}
+* {box-sizing:border-box}
+body {margin:0;background:var(--paper);color:var(--ink);line-height:1.65}
+button,input,select {font:inherit}
+select {min-height:42px;padding:8px 10px;color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:5px;max-width:100%}
+:focus-visible {outline:2px solid var(--accent);outline-offset:3px}
+a {color:var(--accent);text-underline-offset:3px}
+.sampler-controls {max-width:960px;margin:auto;padding:24px 32px;display:flex;flex-wrap:wrap;align-items:end;gap:16px 24px;border-bottom:1px solid var(--rule)}
+.sampler-controls label {display:flex;flex:1 1 160px;flex-direction:column;gap:6px;font-size:.8125rem}
+.sampler-controls select {width:100%;font-size:1rem}
+.page {width:100%;max-width:960px;margin:20px auto 48px;container:artifact-page / inline-size}
+.page.mobile {max-width:390px}
+.content {max-width:800px;margin:auto;padding:48px}
+.sample-label {font-size:.8125rem;color:var(--quiet);margin:0 0 20px}
+h1 {font-size:2rem;line-height:1.17;letter-spacing:-.025em;font-weight:500;text-wrap:balance;margin:0 0 20px}
+h2 {font-size:1.28rem;line-height:1.35;letter-spacing:-.012em;font-weight:500;margin:34px 0 12px}
+h3 {font-size:1rem;line-height:1.45;font-weight:500;margin:0 0 8px}
+p {margin:0 0 16px;max-width:68ch}
+.intro {font-size:1.06rem}
+.quiet {color:var(--quiet)}
+.small {font-size:.875rem}
+strong {font-weight:600}
+figure {margin:28px 0 30px}
+figcaption {font-size:.8125rem;color:var(--quiet);margin-top:14px}
+.callout {margin:22px 0;padding:15px 18px;background:var(--wash);border-radius:7px}
+.callout p:last-child {margin-bottom:0}
+.next-action {padding:18px 20px;background:var(--accent-wash);border-radius:7px;margin:26px 0}
+.next-action p {margin-bottom:0}
+.next-action .action-label {font-size:.8125rem;color:var(--accent);margin-bottom:6px}
+table {width:100%;border-collapse:collapse;table-layout:fixed;font-size:.92rem;margin:16px 0 24px}
+caption {text-align:left;font-weight:500;padding-bottom:8px}
+th,td {text-align:left;vertical-align:top;padding:12px 10px 12px 0;border-bottom:1px solid var(--rule);overflow-wrap:anywhere}
+th {font-weight:500}
+thead th {font-size:.8125rem;color:var(--quiet)}
+td:last-child,th:last-child {padding-right:0}
+.defaults th {width:34%}
+.comparison th:first-child {width:26%}
+.metrics td:nth-child(2) {font-size:1.125rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.metrics th:first-child {width:42%}
+.metrics th:nth-child(2) {width:22%}
+.good {color:var(--good)}
+.warning {color:var(--warning)}
+.number {font-variant-numeric:tabular-nums}
+.chart-heading {display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+.chart-heading h2 {margin:0}
+.chart-heading label {display:flex;align-items:center;gap:10px;font-size:.8125rem}
+.bar-chart {list-style:none;margin:0;padding:0}
+.bar-chart li {display:grid;grid-template-columns:34px minmax(0,1fr) 24px;gap:14px;align-items:center;margin:13px 0;font-size:.875rem}
+.bar-track {height:13px;background:var(--wash)}
+.bar-fill {height:100%;background:var(--accent)}
+.issue-list,.work-list {list-style:none;padding:0;margin:16px 0}
+.issue-list li,.work-list li {padding:17px 0;border-top:1px solid var(--rule)}
+.issue-list p,.work-list p {margin:5px 0 0}
+.item-heading {display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 16px;justify-content:space-between}
+.item-heading h3 {margin:0}
+.state {font-size:.8125rem;white-space:nowrap}
+.steps {padding-left:22px;margin:16px 0}
+.steps li {padding:0 0 13px 4px}
+.steps p {margin:4px 0 0;color:var(--quiet);font-size:.875rem}
+.roles {margin:18px 0}
+.roles dt {font-weight:500;margin-top:20px}
+.roles dd {margin:5px 0 0}
+details {margin-top:28px;color:var(--quiet);font-size:.875rem}
+summary {padding:8px 0;cursor:pointer;color:var(--accent);min-height:40px}
+details p {margin-top:8px}
+.shape-note {margin-top:36px;padding-top:18px;border-top:1px solid var(--rule)}
+.flow {display:block;width:100%;overflow:visible}
+.flow rect {fill:var(--wash);stroke:var(--rule);stroke-width:1}
+.flow text {fill:var(--ink);font-family:inherit}
+.flow .node-title {font-size:15px;font-weight:500}
+.flow .node-detail,.flow .edge-label {font-size:13px;fill:var(--quiet)}
+.flow .edge {stroke:var(--quiet);stroke-width:1.3;fill:none}
+.flow .arrow {fill:var(--quiet)}
+@container artifact-page (max-width:500px) {
+  .content {padding:24px 20px}
+  h1 {font-size:1.75rem}
+  table {font-size:.875rem}
+  .comparison th:first-child {width:28%}
+  th,td {padding-right:8px}
+  .chart-heading {align-items:start;flex-direction:column}
+}
+@media(max-width:480px) {
+  .sampler-controls {padding:20px;gap:14px}
+  .sampler-controls label {flex-basis:100%}
+  .page {margin-top:0}
+}
+@media print {
+  :root {color-scheme:light!important}
+  .sampler-controls,.shape-note {display:none}
+  .page,.page.mobile {max-width:none;margin:0}
+  .content {padding:0}
+  figure,.next-action,tr {break-inside:avoid}
+}
+[hidden] {display:none!important}
+button {cursor:pointer;background:var(--paper);color:var(--ink);border:1px solid var(--rule);border-radius:5px;padding:7px 12px;min-height:40px}
+button:hover {background:var(--wash)}
+.text-button {padding:5px 0;background:none;border:0;color:var(--accent);text-align:left}
+.dashboard-tabs {display:flex;border-bottom:1px solid var(--rule);gap:20px;margin-top:30px}
+.dashboard-tabs button {border:0;border-radius:0;padding:12px 2px;background:none;border-bottom:2px solid transparent;color:var(--quiet)}
+.dashboard-tabs button[aria-selected=true] {color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+[role=tabpanel] {scroll-margin-top:20px;min-height:460px}
+.filter-label {display:flex;align-items:center;gap:12px;margin:20px 0 10px;font-size:.875rem}
+.activity-list {list-style:none;padding:0;margin:10px 0 30px}
+.activity-list li {display:flex;gap:20px;padding:16px 0;border-top:1px solid var(--rule)}
+.activity-list time {font-size:.8125rem;color:var(--quiet);font-variant-numeric:tabular-nums;padding-top:3px}
+.activity-list p {font-size:.875rem;color:var(--quiet);margin:4px 0 0}
+.architecture-figure {width:calc(100cqw - 64px);position:relative;left:50%;transform:translateX(-50%);margin-left:0;margin-right:0}
+.graph-shell {border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--paper)}
+.graph-toolbar {padding:12px 16px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid var(--rule)}
+.graph-controls {display:flex;gap:6px}
+.graph-controls button {font-size:.875rem;padding:5px 11px}
+.graph-viewport {width:100%;overflow:auto;max-height:1100px;overscroll-behavior:contain}
+.architecture-graph {display:block;width:880px;max-width:none;height:auto;margin:auto}
+.architecture-graph text {font-family:inherit;fill:var(--ink)}
+.graph-group {fill:var(--wash);stroke:var(--rule);stroke-width:.8}
+.graph-group-title {font-size:13px;fill:var(--quiet)!important;font-weight:600;letter-spacing:.6px}
+.graph-node {cursor:pointer}
+.graph-node rect {fill:var(--paper);stroke:var(--rule);stroke-width:1.3}
+.graph-node:hover rect,.graph-node:focus rect,.graph-node.selected rect {stroke:var(--accent);stroke-width:2}
+.graph-node.selected rect {fill:var(--accent-wash)}
+.graph-node .node-title {font-size:16px;font-weight:500}
+.graph-node .node-detail {font-size:13px;fill:var(--quiet)}
+.graph-edge {stroke:var(--quiet);stroke-width:1.4;fill:none}
+.graph-edge.feedback {stroke-dasharray:6 5;stroke:var(--accent)}
+.graph-edge.highlight {stroke:var(--accent);stroke-width:2.4}
+.graph-edge-label {font-size:12px;fill:var(--quiet)!important;paint-order:stroke;stroke:var(--paper);stroke-width:4px;stroke-linejoin:round}
+.graph-dim {opacity:.5}
+.graph-legend {display:flex;flex-wrap:wrap;gap:8px 20px;padding:12px 16px;font-size:.75rem;color:var(--quiet);border-top:1px solid var(--rule)}
+.graph-legend [data-zoom-label] {margin-left:auto}
+.graph-inspector {padding:18px 20px;border-top:1px solid var(--rule);min-height:140px}
+.graph-inspector p {font-size:.875rem;margin:8px 0 0;color:var(--quiet)}
+.graph-inspector button {font-size:.8125rem}
+.graph-dialog {max-width:none;max-height:none;width:calc(100vw - 32px);height:calc(100vh - 32px);padding:0;border:1px solid var(--rule);border-radius:8px;background:var(--paper);color:var(--ink)}
+.graph-dialog::backdrop {background:#0008}
+.graph-dialog .graph-shell {height:100%;display:flex;flex-direction:column;border:0}
+.graph-dialog .graph-viewport {flex:1;min-height:0;max-height:none}
+.graph-dialog .graph-inspector {min-height:0}
+@container artifact-page (max-width:800px) {.architecture-figure {width:100%;left:0;transform:none;margin-left:0;margin-right:0}}
+@container artifact-page (max-width:500px) {
+ .dashboard-tabs {gap:0;justify-content:space-between}
+ .dashboard-tabs button {font-size:.875rem;padding:12px 3px}
+ .activity-list li {gap:14px}
+ .graph-toolbar {padding:12px}
+ .graph-inspector {padding:15px}
+ .graph-viewport {max-height:680px}
+}
+@media print {.dashboard-tabs,.graph-controls {display:none} [role=tabpanel][hidden] {display:block!important} .graph-viewport {overflow:visible;max-height:none} .architecture-graph {width:100%!important} .architecture-figure {width:100%;left:0;transform:none;margin-left:0;margin-right:0}}
+
+#panel-capacity th:first-child {width:40%}
+
+/* Direct manipulation keeps a large diagram readable at any zoom. */
+.graph-viewport {position:relative;height:clamp(420px,65vh,720px);overflow:clip;cursor:grab;touch-action:pinch-zoom;user-select:none}
+.architecture-graph {position:absolute;top:0;left:0;margin:0;transform-origin:0 0}
+.graph-viewport.is-dragging,.graph-viewport.is-dragging * {cursor:grabbing}
+.graph-dialog .graph-viewport {height:auto}
+.graph-help {max-width:none;font-size:.8125rem;color:var(--quiet);padding:8px 16px;margin:0;border-bottom:1px solid var(--rule)}
+.footnote-ref {font-size:.75em;vertical-align:super;line-height:0;padding:4px 2px;scroll-margin-top:28px}
+.footnotes {margin-top:34px;padding-top:18px;border-top:1px solid var(--rule);color:var(--quiet);font-size:.875rem}
+.footnotes h2 {font-size:1rem;margin:0 0 12px}
+.footnotes ol {padding-left:22px;margin:0}
+.footnotes li {padding:6px 0 6px 4px;scroll-margin-top:28px}
+.footnotes li:target {background:var(--accent-wash);outline:6px solid var(--accent-wash);border-radius:3px}
+.footnote-back {white-space:nowrap;padding:4px}
+@media print {.graph-viewport {height:auto;overflow:visible} .architecture-graph {position:static;transform:none!important} .graph-help {display:none}}

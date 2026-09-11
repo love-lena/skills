@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plain HTML Artifacts"
+  short_description: "Consistent Plain HTML layouts and interactions"
+  default_prompt: "Use $html-artifact-style to create a standalone HTML artifact in my Plain style."
