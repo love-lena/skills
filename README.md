@@ -24,6 +24,10 @@ npx skills add love-lena/skills -g
 
 ## Skills
 
+### [`visual-explainer`](./skills/visual-explainer/SKILL.md)
+
+Create friendly explainers through simple illustrations, diagrams, and minimal text. Visuals carry the explanation; the aesthetic stays open to the subject and your references.
+
 ### [`html-artifact-style`](./skills/html-artifact-style/SKILL.md)
 
 Create standalone HTML artifacts in Lena's Plain style: light and dark appearances, a single reading column, deliberate diagrams, inline footnotes, and clear interaction hierarchy.

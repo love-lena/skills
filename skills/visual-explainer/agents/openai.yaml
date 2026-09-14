@@ -1,0 +1,4 @@
+interface:
+  display_name: "Visual Explainer"
+  short_description: "Simple illustrations and sparse text that explain"
+  default_prompt: "Use $visual-explainer to explain this with simple illustrative visuals and minimal text."
