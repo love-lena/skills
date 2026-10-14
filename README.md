@@ -34,6 +34,10 @@ Create standalone HTML artifacts in Lena's Plain style: light and dark appearanc
 
 Includes document, dashboard, status board, comparison, and system explainer shapes; a renderer for self-contained HTML; a draggable graph example; and the approved shadcn/ui log explorer with editable source and a bundled offline build.
 
+### [`upload-artifact`](./skills/upload-artifact/SKILL.md)
+
+Upload or update personal HTML artifacts at `artifacts.lena.dog` using `htmldog`. Covers browser authentication, self-contained packaging, sharing settings, and verification of the uploaded source and hosted page.
+
 ### [`status-board`](./skills/status-board/SKILL.md)
 
 Turn active engineering work into a self-contained HTML decision surface. It leads with the single highest-leverage next action, maps a PR stack in dependency order, and lays out the complete path to shipped.

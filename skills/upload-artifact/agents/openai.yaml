@@ -1,0 +1,3 @@
+interface:
+  display_name: "Upload Artifact"
+  short_description: "Upload and verify artifacts on artifacts.lena.dog"
