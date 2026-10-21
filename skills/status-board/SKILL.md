@@ -53,7 +53,9 @@ Add a section only when it changes understanding or action:
 
 Use inline SVG for relationships that benefit from spatial explanation. Give each diagram `role="img"` and a useful `aria-label`. Prefer prose or a short list when space adds no meaning.
 
-## Use an editorial planning-map aesthetic
+## Choose the presentation
+
+When `html-artifacts` is installed, use its presentation routing: Plain by default, Fancy when requested. This skill still owns the shipping spine and the present-tense content filter. Follow an existing artifact's design when updating it. If the presentation skill is unavailable, use this standalone fallback:
 
 - Build on an off-white or near-white canvas with dark ink, muted blue-gray structure, and sparse teal or amber status accents.
 - Use a strong headline, readable body, small tracked monospace labels, thin rules, numbered sections, generous spacing, and dense but uncrowded information.

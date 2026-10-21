@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML Artifacts"
+  short_description: "Plain by default, expressive styles and explainers"
+  default_prompt: "Use $html-artifacts to create this artifact; use Plain unless I request a different style."

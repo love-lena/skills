@@ -1,17 +1,12 @@
 ---
 name: visual-explainer
-description: Create friendly visual explainers that teach through simple illustrations and minimal text. Use when the user wants an image-heavy explanation or illustrated field guide rather than a prose document or dense dashboard.
+description: Create picture-led explanations with sparse labels and captions through HTML Artifacts. Use for visual teaching and illustrated guides; Plain is the default presentation, with Fancy available on request.
 ---
 
 # Visual Explainer
 
-Make the explanation work through pictures. A reader should grasp the main ideas by scanning the visuals and their labels.
+Read [HTML Artifacts](../html-artifacts/SKILL.md), then its [Visual Explainer method](../html-artifacts/references/visual-explainer.md). Use Plain by default; choose Fancy when requested. Match static or interactive behavior to the task.
 
-- Start with what the reader needs to understand. Give each idea a simple illustrative visual: a concrete metaphor, labeled illustration, sequence, comparison, diagram, or small chart.
-- Make visuals the main content. Show relationships, scale, movement, or differences directly; choose images that explain something rather than merely decorate a section.
-- Keep text sparse: short headings, direct labels, and brief captions that state the takeaway. Put optional technical depth and sources in expandable details or footnotes. Keep qualifications that change the takeaway visible.
-- Use a friendly, approachable tone. Simplify the representation while preserving the underlying meaning; distinguish illustrative quantities from measured data.
-- Choose the aesthetic to suit the subject and any user references. This skill prescribes no palette, typography, illustration style, or fixed page template.
-- Add interaction when changing a parameter or revealing a step makes the idea easier to understand.
+The teaching guidance lives in the canonical skill and combines with either presentation.
 
-Inspect the rendered result before delivery. Check that the visuals remain legible at the intended sizes, include accessible descriptions, and carry the explanation without requiring paragraphs of supporting prose.
+This entrypoint requires `html-artifacts` installed alongside it. If it is missing, install both from `love-lena/skills`; see the repository installation instructions.

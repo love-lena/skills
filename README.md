@@ -1,42 +1,92 @@
 # lena's skills
 
-A collection of [open agent skills](https://skills.sh) for Claude Code, Cursor, Codex, OpenCode, and the other agents that support the [`skills`](https://skills.sh) CLI.
+Reusable agent skills for creating clear artifacts, explaining engineering work, and publishing HTML. The HTML family includes its instructions, examples, editable sources, and renderer; it needs no prior chat, private file path, or local project.
 
-## Install
+## Start with HTML Artifacts
 
-All skills:
+Install the creation and optional publishing skills into your agent's global skill directory:
 
-```bash
-npx skills add love-lena/skills
+```sh
+npx skills add love-lena/skills --skill html-artifacts upload-artifact -g
 ```
 
-A specific skill:
+The installer lets you choose an agent. Add `-a codex` or `-a claude-code` to select one directly; omit `-g` for a project-local install. Node.js/npm are needed for this installer, not for viewing generated HTML. Open a new agent session if newly installed skills are not discovered immediately.
 
-```bash
-npx skills add love-lena/skills --skill change-story
+Try these prompts in a skill-aware agent (Codex supports the `$skill-name` spelling):
+
+```text
+Use $html-artifacts to turn these notes into a self-contained HTML report.
 ```
 
-Globally (available across all projects):
-
-```bash
-npx skills add love-lena/skills -g
+```text
+Use $html-artifacts in Fancy mode to prototype a fast design-feedback form.
+Choose an approach that suits frequent keyboard entry. Make the controls work.
 ```
 
-## Skills
+```text
+Use $html-artifacts to explain this system through visuals and sparse labels.
+```
 
-### [`visual-explainer`](./skills/visual-explainer/SKILL.md)
+```text
+Use $upload-artifact to upload this HTML file to artifacts.lena.dog privately.
+```
 
-Create friendly explainers through simple illustrations, diagrams, and minimal text. Visuals carry the explanation; the aesthetic stays open to the subject and your references.
+**Plain is the default.** Fancy adds six approaches to composition and interaction. Visual Explainer is a teaching method that works with either. Publishing is a separate, explicitly requested action; it does not require using a particular presentation.
 
-### [`html-artifact-style`](./skills/html-artifact-style/SKILL.md)
+## How the HTML family fits together
 
-Create standalone HTML artifacts in Lena's Plain style: light and dark appearances, a single reading column, deliberate diagrams, inline footnotes, and clear interaction hierarchy.
+| Skill | Role |
+| --- | --- |
+| [html-artifacts](skills/html-artifacts/SKILL.md) | Main entrypoint; owns Plain, Fancy, the teaching method, all examples, and the renderer. Works by itself. |
+| [fancy-html-artifacts](skills/fancy-html-artifacts/SKILL.md) | Optional shortcut to Fancy; requires `html-artifacts` alongside it. |
+| [html-artifact-style](skills/html-artifact-style/SKILL.md) | Compatibility shortcut to Plain; requires `html-artifacts`. Legacy resource paths forward to the canonical resources. |
+| [visual-explainer](skills/visual-explainer/SKILL.md) | Optional shortcut to visual teaching; requires `html-artifacts`. |
+| [upload-artifact](skills/upload-artifact/SKILL.md) | Independent packaging, authentication, upload/update, sharing, and verification workflow for `artifacts.lena.dog`. |
 
-Includes document, dashboard, status board, comparison, and system explainer shapes; a renderer for self-contained HTML; a draggable graph example; and the approved shadcn/ui log explorer with editable source and a bundled offline build.
+For the complete family, including the older names:
 
-### [`upload-artifact`](./skills/upload-artifact/SKILL.md)
+```sh
+npx skills add love-lena/skills --skill html-artifacts fancy-html-artifacts html-artifact-style visual-explainer upload-artifact -g
+```
 
-Upload or update personal HTML artifacts at `artifacts.lena.dog` using `htmldog`. Covers browser authentication, self-contained packaging, sharing settings, and verification of the uploaded source and hosted page.
+The CLI does not resolve cross-skill dependencies automatically. Install the canonical skill together with any shortcut. For manual installation, copy the selected folders from `skills/` into your agent's skill directory, keeping their names and sibling relationship. The canonical folder alone has no sibling dependencies. Retain relative symlinks if keeping the legacy resource paths.
+
+### Six Fancy approaches
+
+| Approach | What organizes the surface | Visual starting point |
+| --- | --- | --- |
+| [Register](skills/html-artifacts/references/styles/register.md) | Records, shared axes, inline edits, exceptions | Cobalt worksheet |
+| [Annotated editorial](skills/html-artifacts/references/styles/editorial.md) | A reading path with evidence and comments anchored in place | Warm paper and serif |
+| [Full-canvas map](skills/html-artifacts/references/styles/canvas.md) | The object and its spatial relationships | Graphite and mint |
+| [Asymmetric comparison](skills/html-artifacts/references/styles/comparison.md) | Consequential differences and comparable criteria | Black, electric blue, lime |
+| [Guided focus](skills/html-artifacts/references/styles/guided.md) | One judgment or next action | Lavender and deliberate space |
+| [Compact working surface](skills/html-artifacts/references/styles/composer.md) | A draft with nearby context, properties, and action | Forest and citrus |
+
+![Six approved compositions](skills/html-artifacts/assets/fancy/examples/overview.jpg)
+
+Each guide includes applications to KPIs, design feedback, forms, and explanations, plus an approved PNG, editable SVG, and an HTML viewer with a text equivalent. The example subject is a conceptual control-program proposal; its content is illustrative, not a dependency on that project. Choose one approach for ordinary work, or ask for alternatives. These are different compositions, not six wrappers around a common page template.
+
+### Preview from a fresh checkout
+
+```sh
+git clone https://github.com/love-lena/skills.git
+cd skills
+python3 skills/html-artifacts/scripts/render.py --gallery --output-dir /tmp/html-artifact-examples
+```
+
+Open `/tmp/html-artifact-examples/index.html` in a browser for the five Plain shapes. Open `skills/html-artifacts/assets/fancy/examples/index.html` for Fancy. If your agent's browser tool requires HTTP, serve those files with an ordinary local HTTP server instead of using a `file://` URL.
+
+Python 3's standard library is sufficient for the Plain renderer. The dashboard includes an offline build; Node.js/npm are needed only when rebuilding its editable React source. Ordinary documents and Fancy compositions can be authored directly in HTML/CSS/SVG. Plain uses modern CSS, including `light-dark()`, `color-mix()`, and container queries; use a current browser or adapt the CSS for older targets. Preserve the bundled dependency license notices.
+
+### Publishing prerequisites
+
+`upload-artifact` targets Lena's service at `https://artifacts.lena.dog`; access requires an authorized account. It explains how to find or download the supported `htmldog` client, authenticate in a browser, and verify the result. It needs a POSIX shell, `curl`, and `openssl`; it does not assume an existing client, session, checkout, or Cloudflare credentials.
+
+New uploads remain private unless sharing is requested. The hosted viewer runs self-contained HTML with inline scripts, but blocks external resources, network calls, native form submission, and browser storage. A local prototype that depends on those features needs adaptation or a different hosting environment. Creating HTML locally has no authentication requirement.
+
+## Other skills
+
+Install the whole collection interactively with `npx skills add love-lena/skills`, or select a skill with `--skill NAME`.
 
 ### [`status-board`](./skills/status-board/SKILL.md)
 

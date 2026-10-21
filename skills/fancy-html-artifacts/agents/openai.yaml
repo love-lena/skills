@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fancy HTML Artifacts"
+  short_description: "Six expressive compositions through HTML Artifacts"
+  default_prompt: "Use $fancy-html-artifacts to create an expressive HTML artifact with a composition suited to the task."

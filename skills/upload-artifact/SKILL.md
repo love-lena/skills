@@ -7,11 +7,13 @@ description: Upload or update Lena's HTML artifacts at artifacts.lena.dog using 
 
 Publish to **https://artifacts.lena.dog**, Lena's ShareHTML deployment. In this workflow, “upload to lena.dog” means this artifact service. Use its `htmldog` application client; uploading a document does not require a Cloudflare deployment or infrastructure changes.
 
-## Prepare the artifact
+## Create or prepare the artifact
+
+If the HTML still needs creating or restyling and `html-artifacts` is installed, use its entrypoint for presentation: Plain by default, Fancy when requested, and the Visual Explainer method for visual teaching. An existing ready-to-upload file needs no style conversion. The upload workflow also works independently of the creation skill.
 
 Use one self-contained HTML file. The shell client sends the file as HTML without converting Markdown, source code, PDFs, or other binaries. Render text sources to HTML when that meets the request; clarify a request for native binary hosting before substituting a format or service.
 
-The hosted viewer supports inline CSS and JavaScript, but blocks network connections, external subresources, forms, and nested frames. Embed required images, fonts, and media as data URLs, and bundle scripts/styles into the HTML. Keep the editable sources locally. Check the packaged page before uploading, especially interactions that might rely on a local server or CDN.
+The hosted viewer supports inline CSS and JavaScript, but blocks network connections, external subresources, native form submission, and nested frames. It runs the artifact without same-origin permission, so browser storage such as localStorage is unavailable. In-page controls can update local UI state; they cannot silently become a persistent or network-backed application. Embed required images, fonts, and media as data URLs, and bundle scripts/styles into the HTML. Keep the editable sources locally. Check the packaged page before uploading, especially interactions that might rely on storage, a local server, or a CDN. If the task requires those capabilities, explain this hosting limitation and keep the working local version available.
 
 ## Locate the client and authenticate
 
@@ -31,7 +33,7 @@ The hosted viewer supports inline CSS and JavaScript, but blocks network connect
    sh "$artifact_cli" login
    ```
 
-   This starts a PKCE-protected device login, prints an authorization URL, and normally opens the browser. Surface that URL and keep the command running while browser authorization completes. Use an existing signed-in browser session where available; leave credential entry and MFA to Lena. The CLI polls for up to ten minutes. Use short tool waits so the user can still interact. Treat only `Login complete` followed by a successful `list` as authenticated.
+   This starts a PKCE-protected device login, prints an authorization URL, and normally opens the browser. Surface that URL and keep the command running while browser authorization completes. Use an existing signed-in browser session where available; leave credential entry and MFA to the user. The CLI polls for up to ten minutes. Use short tool waits so the user can still interact. Treat only `Login complete` followed by a successful `list` as authenticated.
 
    Sessions last 24 hours. The client stores them in macOS Keychain or Linux Secret Service when available, with a mode-0600 local fallback. Let the client handle credentials; keep tokens, cookies, and credential files out of tool output, artifacts, and the skills repo. GitHub's CLI login and Cloudflare API credentials do not authenticate this application client.
 4. Reauthenticate at most once per failed attempt. If login is denied, times out, or still fails, stop and report the required user action. For HTTP 403, check account/document access rather than repeatedly logging in. Report network or service failures as such; they do not establish an expired session.
